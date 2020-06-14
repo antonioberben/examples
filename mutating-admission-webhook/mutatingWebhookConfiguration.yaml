@@ -1,0 +1,21 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: mutate-example-admission-controller
+webhooks:
+  - name: mutating-webhook.openpolicyagent.org
+    clientConfig:
+      service:
+        name: mutate-example
+        namespace: demo-mutate
+        path: "/v0/data/system/mutate"
+      caBundle: <PASTE HERE THE CERT VALUE>
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    objectSelector:
+      matchLabels:
+        app: mutate-me
+    failurePolicy: Fail
