@@ -1,2 +1,3 @@
 mutating-admission-webhook/webhook-create-signed-cert.sh
 mutating-admission-webhook/cert
+keycloak/clients.txt

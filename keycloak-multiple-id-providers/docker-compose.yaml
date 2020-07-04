@@ -1,0 +1,34 @@
+version: '3'
+services:
+  my-auth-server:
+    image: "jboss/keycloak:10.0.2"
+    networks:
+      internal:
+    extra_hosts:
+      my.auth.com: 172.18.0.1
+      external.auth.com: 172.18.0.1
+    ports:
+      - "8180:8080"
+    volumes:
+      - ./realms:/tmp/realms
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/realms/my_auth_realm.json
+  external-auth-server:
+    image: "jboss/keycloak:10.0.2"
+    ports:
+      - "8280:8080"
+    volumes:
+      - ./realms:/tmp/realms
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/realms/external_auth_realm.json
+    networks:
+      internal:
+    extra_hosts:
+      my.auth.com: 172.18.0.1
+      external.auth.com: 172.18.0.1
+networks:
+  internal:
