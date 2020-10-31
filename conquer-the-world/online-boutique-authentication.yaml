@@ -1,0 +1,38 @@
+apiVersion: "security.istio.io/v1beta1"
+kind: "RequestAuthentication"
+metadata:
+  name: online-boutique-jwt
+  namespace: online-boutique
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  jwtRules:
+  - issuer: "https://securetoken.google.com"
+    jwksUri: "https://www.googleapis.com/oauth2/v1/certs"
+  #- issuer: "https://auth.172.27.0.3.nip.io/auth/realms/sample"
+  #- issuer: "https://auth-server/auth/realms/sample"
+  #  jwksUri: "https://auth.172.27.0.3.nip.io/auth/realms/sample/protocol/openid-connect/certs"
+  #  jwksUri: "https://auth-server/auth/realms/sample/protocol/openid-connect/certs"
+    forwardOriginalToken: true
+    outputPayloadToHeader: x-jwt-payload
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: online-boutique-authorization
+  namespace: online-boutique
+spec:
+  action: ALLOW
+  selector:
+    matchLabels:
+      app: frontend
+  rules:
+  - to:
+    - operation:
+        #hosts: ["frontend.*"]
+        methods: ["GET"]
+#  rules:
+#  - from:
+#    - source:
+#        requestPrincipals: ["*"]

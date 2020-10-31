@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: online-boutique-route
+  namespace: online-boutique
+spec:
+  hosts:
+  - online.boutique.172.27.0.3.nip.io
+  http:
+  - name: "auth-service"
+    route:
+    - destination:
+        host: frontend.online-boutique.svc.cluster.local

@@ -1,0 +1,116 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: online-boutique-gatekeeper-config
+  namespace: online-boutique
+data:
+  keycloak-gatekeeper.conf: |+
+    discovery-url: https://auth.172.27.0.3.nip.io:30280/auth/realms/sample
+    skip-openid-provider-tls-verify: true
+    client-id: online-boutique
+    client-secret: 2f85e3de-9be7-4781-80d0-ef008665f8f7
+    listen: :3000
+    enable-refresh-tokens: true
+    tls-cert:
+    tls-private-key:
+    redirection-url: https://online.boutique.172.27.0.3.nip.io:30280
+    secure-cookie: false
+    encryption-key: vGcLt8ZUdPX5fXhtLZaPHZkGWHZrT6aa
+    upstream-url: http://localhost:8080/
+    resources:
+    - uri: /*
+    groups:
+    - sample-group
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: online-boutique
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      containers:
+        - name: gatekeeper
+          image: keycloak/keycloak-gatekeeper:5.0.0
+          args:
+          - --config=/etc/keycloak-gatekeeper.conf
+          ports:
+          - containerPort: 3000
+            name: http
+          volumeMounts:
+          - name: gatekeeper-config
+            mountPath: /etc/keycloak-gatekeeper.conf
+            subPath: keycloak-gatekeeper.conf
+        - name: server
+          image: gcr.io/google-samples/microservices-demo/frontend:v0.1.3
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-readiness-probe"
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-liveness-probe"
+          env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "cartservice:7070"
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "recommendationservice:8080"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "checkoutservice:5050"
+          - name: AD_SERVICE_ADDR
+            value: "adservice:9555"
+          # - name: JAEGER_SERVICE_ADDR
+          #   value: "jaeger-collector:14268"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+      volumes:
+      - name : gatekeeper-config
+        configMap:
+          name: online-boutique-gatekeeper-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: online-boutique
+spec:
+  type: ClusterIP
+  selector:
+    app: frontend
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000

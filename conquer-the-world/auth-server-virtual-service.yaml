@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: auth-server-route
+  namespace: auth-server
+spec:
+  hosts:
+  - auth.172.27.0.3.nip.io
+  http:
+  - name: "auth-service"
+    route:
+    - destination:
+        host: auth-keycloak-http.auth-server.svc.cluster.local

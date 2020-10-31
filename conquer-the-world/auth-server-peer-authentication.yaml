@@ -1,0 +1,9 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: auth-server
+  namespace: auth-server
+spec:
+  mtls:
+    mode: STRICT
+    #mode: DISABLE

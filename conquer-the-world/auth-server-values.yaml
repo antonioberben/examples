@@ -1,0 +1,19 @@
+keycloak:
+  username: keycloak
+  password: keycloak
+
+  tag: 10.0.0
+
+  extraVolumes: |
+    - name: auth-server-realm-secret
+      secret:
+        secretName: auth-server-realm-secret
+
+  extraVolumeMounts: |
+    - name: auth-server-realm-secret
+      mountPath: "/realm/"
+      readOnly: true
+
+  extraEnv: |
+    - name: KEYCLOAK_IMPORT
+      value: /realm/auth-server-realm.json

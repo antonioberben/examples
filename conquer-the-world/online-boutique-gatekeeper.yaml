@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gatekeeper
+  namespace: online-boutique
+spec:
+  type: ClusterIP
+  selector:
+    app: gatekeeper
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatekeeper
+  namespace: online-boutique
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatekeeper
+  template:
+    metadata:
+      labels:
+        app: gatekeeper
+    spec:
+      containers:
+      - name: gatekeeper
+        image: keycloak/keycloak-gatekeeper:5.0.0
+        args:
+        - --config=/etc/keycloak-gatekeeper.conf
+        ports:
+        - containerPort: 3000
+          name: http
+        volumeMounts:
+        - name: gatekeeper-config
+          mountPath: /etc/keycloak-gatekeeper.conf
+          subPath: keycloak-gatekeeper.conf
+      volumes:
+      - name : gatekeeper-config
+        configMap:
+          name: gatekeeper-config
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatekeeper-config
+  namespace: online-boutique
+data:
+  keycloak-gatekeeper.conf: |+
+    discovery-url: https://auth.172.27.0.3.nip.io:30280/auth/realms/sample
+    skip-openid-provider-tls-verify: true
+    client-id: gatekeeper
+    client-secret: ea43bab5-13a5-4d96-9f1e-0b371a0cc12e
+    listen: :3000
+    enable-refresh-tokens: true
+    tls-cert:
+    tls-private-key:
+    redirection-url: https://online.boutique.172.27.0.3.nip.io
+    secure-cookie: false
+    encryption-key: vGcLt8ZUdPX5fXhtLZaPHZkGWHZrT6aa
+    upstream-url: http://frontend:80/
+    #forbidden-page: /access-forbidden.html
+    resources:
+    - uri: /*
+    groups:
+    - sample-group

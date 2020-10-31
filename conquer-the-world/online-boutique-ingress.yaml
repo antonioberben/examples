@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: online-boutique-ingress
+  namespace: online-boutique
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  tls:
+  - hosts:
+      - online.boutique.172.27.0.3.nip.io
+    secretName: istio-ingressgateway-certs
+  rules:
+  - host: online.boutique.172.27.0.3.nip.io
+    http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: frontend
+          servicePort: 80
