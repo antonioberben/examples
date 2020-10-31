@@ -1,0 +1,33 @@
+gateways:
+  istio-egressgateway:
+    name: httpbin-egress
+    labels:
+      app: istio-egressgateway
+      istio: egressgateway
+      custom-egress: httpbin-egress
+global:
+  hub: docker.io/istio
+  tag: 1.7.0
+  arch: 
+    amd64: 2
+    ppc64le: 2
+    s390x: 2
+  defaultPodDisruptionBudget:
+    enabled: true
+  logging:
+    level: "default:info"
+  proxy:
+    image: proxyv2
+  jwtPolicy: "third-party-jwt"
+  multiCluster:
+    enabled: false
+  pilotCertProvider: istiod
+  sds:
+    token:
+      aud: istio-ca
+  sts:
+    servicePort: 0
+meshConfig:
+  enablePrometheusMerge: true
+  defaultConfig:
+    proxyMetadata: {}
