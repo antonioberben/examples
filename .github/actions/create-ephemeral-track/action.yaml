@@ -8,8 +8,10 @@ runs:
   using: "composite"
   steps:
     - run: |
-        cp -r pipeline-test ${{ inputs.who-to-greet }}
-        cd ${{ inputs.who-to-greet }}
-        sed 's/^\(\s*slug\s*:\s*\).*/\1${{ inputs.who-to-greet }}/' track.yml > track.yaml.TMP
+        cp -r pipeline-test ${{ inputs.track-name }}
+        cd ${{ inputs.track-name }}
+        sed 's/^\(\s*slug\s*:\s*\).*/\1${{ inputs.track-name }}/' track.yml > track.yaml.TMP
         mv track.yaml.TMP track.yaml
+        cat track.yaml
+        exit 1
       shell: bash
