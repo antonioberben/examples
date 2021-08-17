@@ -47,3 +47,54 @@ jobs:
           track-name: ${{ env.track-name }}
           ephemeral-track-name: ci-${{ env.track-name }}-tmp
           token: ${{ secrets.INSTRUQT }}
+  test:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: instruqt-cli
+          path: /usr/local/bin
+      - run: chmod +x /usr/local/bin/instruqt
+      - uses: ./.github/actions/test-track
+        with:
+          track-name: ci-${{ env.track-name }}-tmp
+          token: ${{ secrets.INSTRUQT }}
+  deploy:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: instruqt-cli
+          path: /usr/local/bin
+      - run: chmod +x /usr/local/bin/instruqt
+      - uses: ./.github/actions/push-track
+        with:
+          track-name: ${{ env.track-name }}
+          token: ${{ secrets.INSTRUQT }}
+  tear-down:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          name: instruqt-cli
+          path: /usr/local/bin
+      - run: chmod +x /usr/local/bin/instruqt
+      - uses: ./.github/actions/delete-track
+        with:
+          track-name: ci-${{ env.track-name }}-tmp
+          token: ${{ secrets.INSTRUQT }}

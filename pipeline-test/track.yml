@@ -1,5 +1,4 @@
-slug: pipeline-test
-id: bqsvwwhsdhil
+slug: ci-pipeline-test-tmp
 type: track
 title: pipeline-test
 teaser: A short description of the track.
@@ -17,7 +16,6 @@ published: false
 maintenance: true
 challenges:
 - slug: do-something
-  id: qcywnwqp4wqh
   type: challenge
   title: Passing tests
   teaser: Learn how to run and pass tests
