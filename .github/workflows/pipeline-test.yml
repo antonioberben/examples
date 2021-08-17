@@ -8,9 +8,9 @@ on:
         description: 'Run test and deploy if this attribute is true'     
         required: true
         default: 'false'
-  # push:
-  #   branches:
-  #     - main
+  push:
+    # branches:
+    #   - main
   # pull_request:
   #   branches:
   #     - main
