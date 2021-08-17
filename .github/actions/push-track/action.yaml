@@ -1,0 +1,15 @@
+name: push-track
+description: 'Push given track by folder'
+inputs:
+  track-name:  # id of input
+    description: 'Track name to be pushed. It must correspond with its folder name'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        cd ${{ inputs.track-name }}
+        instruqt track push
+      env:
+          INSTRUQT_TOKEN: ${{ secrets.INSTRUQT }}
+      shell: bash
