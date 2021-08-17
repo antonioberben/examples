@@ -1,7 +1,8 @@
-slug: ci-pipeline-test-tmp
+slug: pipeline-test
+id: bqsvwwhsdhil
 type: track
 title: pipeline-test
-teaser: A PR is created.
+teaser: Ths is a change.
 description: |-
   A long description of the track.
 
@@ -16,6 +17,7 @@ published: false
 maintenance: true
 challenges:
 - slug: do-something
+  id: qcywnwqp4wqh
   type: challenge
   title: Passing tests
   teaser: Learn how to run and pass tests
