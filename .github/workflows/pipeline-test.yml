@@ -44,8 +44,6 @@ jobs:
       - run: chmod +x /usr/local/bin/instruqt
       - uses: ./.github/actions/create-ephemeral-track
         with:
-          track-name: ci-${{ env.track-name }}-TMP
-      - uses: ./.github/actions/push-track
-        with:
-          track-name: ci-${{ env.track-name }}-TMP
+          track-name: ${{ env.track-name }}
+          ephemeral-track-name: ci-${{ env.track-name }}-TMP
           token: ${{ secrets.INSTRUQT }}
