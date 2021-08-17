@@ -47,3 +47,4 @@ jobs:
       - uses: ./.github/actions/push-track
         with:
           track-name: ci-${{ env.track-name }}-TMP
+          token: ${{ secrets.INSTRUQT }}
