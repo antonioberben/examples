@@ -43,7 +43,7 @@ jobs:
           path: /usr/local/bin
       - uses: ./.github/actions/create-ephemeral-track
         with:
-          track-name: ci-${{ github.ref }}
+          track-name: ci-${{ env.track-name }}-TMP
       - uses: ./.github/actions/push-track
         with:
-          track-name: ci-${{ github.ref }}
+          track-name: ci-${{ env.track-name }}-TMP
