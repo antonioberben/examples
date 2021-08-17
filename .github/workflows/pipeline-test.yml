@@ -41,6 +41,7 @@ jobs:
         with:
           name: instruqt-cli
           path: /usr/local/bin
+      - run: chmod +x /usr/local/bin/instruqt
       - uses: ./.github/actions/create-ephemeral-track
         with:
           track-name: ci-${{ env.track-name }}-TMP
