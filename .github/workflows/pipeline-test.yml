@@ -83,7 +83,7 @@ jobs:
           token: ${{ secrets.INSTRUQT }}
   tear-down:
     if: always()
-    needs: [test]
+    needs: [deploy]
     runs-on: ubuntu-latest
     defaults:
       run:
