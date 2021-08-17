@@ -48,7 +48,7 @@ jobs:
           ephemeral-track-name: ci-${{ env.track-name }}-tmp
           token: ${{ secrets.INSTRUQT }}
   test:
-    needs: [prepare]
+    needs: [build]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -65,7 +65,7 @@ jobs:
           track-name: ci-${{ env.track-name }}-tmp
           token: ${{ secrets.INSTRUQT }}
   deploy:
-    needs: [prepare]
+    needs: [test]
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -82,7 +82,8 @@ jobs:
           track-name: ${{ env.track-name }}
           token: ${{ secrets.INSTRUQT }}
   tear-down:
-    needs: [prepare]
+    if: always()
+    needs: [test]
     runs-on: ubuntu-latest
     defaults:
       run:
