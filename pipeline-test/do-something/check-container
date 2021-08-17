@@ -2,6 +2,8 @@
 
 echo "Checking if the folder instruqt exists."
 
+exit 1
+
 fail-message "Force fail"
 if [ -d /root/instruqt ]
 then
