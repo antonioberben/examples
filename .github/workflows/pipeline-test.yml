@@ -45,5 +45,5 @@ jobs:
       - uses: ./.github/actions/create-ephemeral-track
         with:
           track-name: ${{ env.track-name }}
-          ephemeral-track-name: ci-${{ env.track-name }}-TMP
+          ephemeral-track-name: ci-${{ env.track-name }}-tmp
           token: ${{ secrets.INSTRUQT }}
