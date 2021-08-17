@@ -1,7 +1,7 @@
 slug: ci-pipeline-test-tmp
 type: track
 title: pipeline-test
-teaser: A short description of the track.
+teaser: A PR is created.
 description: |-
   A long description of the track.
 
