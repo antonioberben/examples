@@ -13,5 +13,4 @@ runs:
         sed 's/^\(\s*slug\s*:\s*\).*/\1${{ inputs.track-name }}/' track.yml > track.yaml.TMP
         mv track.yaml.TMP track.yaml
         cat track.yaml
-        exit 1
       shell: bash
