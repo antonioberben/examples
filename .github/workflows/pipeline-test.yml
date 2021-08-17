@@ -29,6 +29,7 @@ jobs:
           name: instruqt-cli
           path: instruqt
   build:
+    needs: [prepare]
     runs-on: ubuntu-latest
     defaults:
       run:
