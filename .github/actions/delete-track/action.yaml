@@ -1,0 +1,17 @@
+name: push-track
+description: 'Push given track by folder'
+inputs:
+  track-name:  # id of input
+    description: 'Track name to be pushed. It must correspond with its folder name'
+    required: true
+  token:
+    description: 'Instruqt token'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        instruqt track delete soloio/${{ inputs.track-name }}
+      env:
+          INSTRUQT_TOKEN: ${{ inputs.token }}
+      shell: bash
