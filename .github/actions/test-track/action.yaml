@@ -4,11 +4,14 @@ inputs:
   track-name:  # id of input
     description: 'Track name to be tested'
     required: true
+  token:
+    description: 'Instruqt token'
+    required: true
 runs:
   using: "composite"
   steps:
     - run: |
         instruqt track test ${{ inputs.track-name }}
       env:
-          INSTRUQT_TOKEN: ${{ secrets.INSTRUQT }}
+          INSTRUQT_TOKEN: ${{ inputs.token }}
       shell: bash
