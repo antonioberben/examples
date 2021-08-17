@@ -14,7 +14,10 @@ runs:
   using: "composite"
   steps:
     - run: |
-        cd ${{ inputs.track-name }}
+        # Copy track to a temporary folder
+        export tmp_folder=${{ inputs.track-name }}_tmp
+        cp -r ${{ inputs.track-name }} $tmp_folder
+        cd $tmp_folder
 
         # Replace slug
         sed 's/^\(\s*slug\s*:\s*\).*/\1 ${{ inputs.ephemeral-track-name }}/' track.yml > track.yml.TMP
