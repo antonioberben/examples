@@ -32,6 +32,9 @@ runs:
         sed '/checksum:/d' track.yml > track.yml.TMP
         mv track.yml.TMP track.yml
 
+        cat track.yml
+        exit 1
+
         # Push ephemeral track
         instruqt track push
       env:
