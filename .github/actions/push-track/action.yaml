@@ -12,6 +12,8 @@ runs:
   steps:
     - run: |
         cd ${{ inputs.track-name }}
+        pwd
+        cat track.yml
         instruqt track push --force
       env:
           INSTRUQT_TOKEN: ${{ inputs.token }}
