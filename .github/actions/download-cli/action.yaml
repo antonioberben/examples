@@ -1,0 +1,9 @@
+name: download-cli
+description: 'Download instruqt cli'
+runs:
+  using: "composite"
+  steps:
+    - run:  wget -O instruqt.zip https://github.com/instruqt/cli/releases/download/1785-9e2fa1f/instruqt-linux-1785-9e2fa1f.zip
+      shell: bash
+    - run: unzip instruqt.zip
+      shell: bash
