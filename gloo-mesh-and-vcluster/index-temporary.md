@@ -176,12 +176,12 @@ export GLOO_MESH_VERSION=2.0.0-beta20
 
 Install Gloo Mesh Enterprise in your management cluster
 ```
-meshctl install --kubecontext $MGMT_CONTEXT --license $GLOO_MESH_LICENSE_KEY --set insecure=true --version $GLOO_MESH_VERSION
+meshctl install --kubecontext $MGMT_CLUSTER --license $GLOO_MESH_LICENSE_KEY --set insecure=true --version $GLOO_MESH_VERSION
 ```
 
 Verify that the management components
 ```
-kubectl get pods -n gloo-mesh --context $MGMT_CONTEXT
+kubectl get pods -n gloo-mesh --context $MGMT_CLUSTER
 ```
 
 And you will see:
@@ -199,8 +199,8 @@ In the management cluster, find the external address that was assigned by your c
 
 
 ```
-MGMT_SERVER_NETWORKING_DOMAIN=$(kubectl get svc -n gloo-mesh gloo-mesh-mgmt-server --context $MGMT_CONTEXT -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-MGMT_SERVER_NETWORKING_PORT=$(kubectl -n gloo-mesh get service gloo-mesh-mgmt-server --context $MGMT_CONTEXT -o jsonpath='{.spec.ports[?(@.name=="grpc")].port}')
+MGMT_SERVER_NETWORKING_DOMAIN=$(kubectl get svc -n gloo-mesh gloo-mesh-mgmt-server --context $MGMT_CLUSTER -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+MGMT_SERVER_NETWORKING_PORT=$(kubectl -n gloo-mesh get service gloo-mesh-mgmt-server --context $MGMT_CLUSTER -o jsonpath='{.spec.ports[?(@.name=="grpc")].port}')
 MGMT_SERVER_NETWORKING_ADDRESS=${MGMT_SERVER_NETWORKING_DOMAIN}:${MGMT_SERVER_NETWORKING_PORT}
 echo $MGMT_SERVER_NETWORKING_ADDRESS
 ```
@@ -209,8 +209,8 @@ Register `cluster-1`:
 
 ```
 meshctl cluster register \
-  --kubecontext=$MGMT_CONTEXT \
-  --remote-context=$REMOTE_CONTEXT1 \
+  --kubecontext=$MGMT_CLUSTER \
+  --remote-context=$REMOTE_CLUSTER1 \
   --relay-server-address $MGMT_SERVER_NETWORKING_ADDRESS \
   --version $GLOO_MESH_VERSION \
   $REMOTE_CLUSTER1
@@ -220,8 +220,8 @@ Register `cluster-2`:
 
 ```
 meshctl cluster register \
-  --kubecontext=$MGMT_CONTEXT \
-  --remote-context=$REMOTE_CONTEXT2 \
+  --kubecontext=$MGMT_CLUSTER \
+  --remote-context=$REMOTE_CLUSTER2 \
   --relay-server-address $MGMT_SERVER_NETWORKING_ADDRESS \
   --version $GLOO_MESH_VERSION \
   $REMOTE_CLUSTER2
@@ -230,7 +230,7 @@ meshctl cluster register \
 Verify that each workload cluster is successfully registered with Gloo Mesh.
 
 ```
-kubectl get kubernetescluster -n gloo-mesh --context $MGMT_CONTEXT
+kubectl get kubernetescluster -n gloo-mesh --context $MGMT_CLUSTER
 ```
 
 Example output:
@@ -250,7 +250,7 @@ export ISTIO_VERSION=1.11.7
 Install Istio in `cluster-1`
 ```
 CLUSTER_NAME=$REMOTE_CLUSTER1
-cat << EOF | istioctl install -y --context $REMOTE_CONTEXT1 -f -
+cat << EOF | istioctl install -y --context $REMOTE_CLUSTER1 -f -
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -372,7 +372,7 @@ Example output:
 Install Istio in cluster-2.
 ```
 CLUSTER_NAME=$REMOTE_CLUSTER2
-cat << EOF | istioctl install -y --context $REMOTE_CONTEXT2 -f -
+cat << EOF | istioctl install -y --context $REMOTE_CLUSTER2 -f -
 apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 metadata:
@@ -486,8 +486,8 @@ EOF
 Verify that Gloo Mesh successfully discovered the Istio service meshes in each workload cluster.
 
 ```
-kubectl get mesh -n gloo-mesh --context $REMOTE_CONTEXT1
-kubectl get mesh -n gloo-mesh --context $REMOTE_CONTEXT2
+kubectl get mesh -n gloo-mesh --context $REMOTE_CLUSTER1
+kubectl get mesh -n gloo-mesh --context $REMOTE_CLUSTER2
 
 ```
 
@@ -509,14 +509,14 @@ With the idea of workspaces, we try to reduce the complexity and to offer a comp
 Create the bookinfo namespace in each workload cluster.
 
 ```
-kubectl create ns bookinfo --context $REMOTE_CONTEXT1
-kubectl create ns bookinfo --context $REMOTE_CONTEXT2
+kubectl create ns bookinfo --context $REMOTE_CLUSTER1
+kubectl create ns bookinfo --context $REMOTE_CLUSTER2
 
 ```
 
 Create a bookinfo workspace that spans across both cluster-1 and cluster-2
 ```
-kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+kubectl apply --context $MGMT_CLUSTER -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
 metadata:
@@ -537,7 +537,7 @@ EOF
 Create an istio-system workspace that spans across both cluster-1 and cluster-2
 
 ```
-kubectl apply --context $MGMT_CONTEXT -f- <<EOF
+kubectl apply --context $MGMT_CLUSTER -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: Workspace
 metadata:
@@ -558,7 +558,7 @@ EOF
 Workspace can be consider like isolated areas for your teams. You can configure them as follows:
 
 ```
-kubectl apply --context $REMOTE_CONTEXT1 -f- <<EOF
+kubectl apply --context $REMOTE_CLUSTER1 -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: WorkspaceSettings
 metadata:
@@ -577,7 +577,7 @@ spec:
       hostSuffix: 'global'
 EOF
 
-kubectl apply --context $REMOTE_CONTEXT1 -f- <<EOF
+kubectl apply --context $REMOTE_CLUSTER1 -f- <<EOF
 apiVersion: admin.gloo.solo.io/v2
 kind: WorkspaceSettings
 metadata:
