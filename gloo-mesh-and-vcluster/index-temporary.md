@@ -176,7 +176,7 @@ export GLOO_MESH_VERSION=2.0.0-beta20
 
 Install Gloo Mesh Enterprise in your management cluster
 ```
-meshctl install --kubecontext $MGMT_CLUSTER --license $GLOO_MESH_LICENSE_KEY --set insecure=true --version $GLOO_MESH_VERSION
+meshctl install --kubecontext $MGMT_CLUSTER --license $GLOO_MESH_LICENSE_KEY --version $GLOO_MESH_VERSION
 ```
 
 Verify that the management components
