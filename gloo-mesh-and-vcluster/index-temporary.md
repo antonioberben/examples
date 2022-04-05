@@ -96,6 +96,8 @@ Create `mgmt` cluster and retrieve its kubeconfig:
 vcluster create mgmt -n mgmt --expose -f /tmp/vcluster-values.yaml  --isolate
 
 vcluster connect mgmt --namespace mgmt --update-current
+
+kubectl config rename-context vcluster_mgmt_mgmt vcluster-mgmt-mgmt
 ```
 
 Create `cluster1` (Remote cluster1) and retrieve its kubeconfig:
@@ -103,6 +105,8 @@ Create `cluster1` (Remote cluster1) and retrieve its kubeconfig:
 vcluster create cluster1 -n cluster1 --expose -f /tmp/vcluster-values.yaml  --isolate
 
 vcluster connect cluster1 --namespace cluster1 --update-current
+
+kubectl config rename-context vcluster_cluster1_cluster1 vcluster-cluster1-cluster1
 ```
 
 Create `cluster2`(Remote cluster2) and retrieve its kubeconfig:
@@ -110,6 +114,8 @@ Create `cluster2`(Remote cluster2) and retrieve its kubeconfig:
 vcluster create cluster2 -n cluster2 --expose -f /tmp/vcluster-values.yaml  --
 
 vcluster connect cluster2 --namespace cluster2 --update-current
+
+kubectl config rename-context vcluster_cluster2_cluster2 vcluster-cluster2-cluster2
 ```
 
 Obtain the host cluster context:
@@ -120,8 +126,8 @@ HOST_CLUSTER=$(kubectl config current-context)
 And keep the contexts for the vcluster:
 ```
 export MGMT_CLUSTER=vcluster_mgmt_mgmt
-export REMOTE_CLUSTER1=vcluster_cluster1_cluster1
-export REMOTE_CLUSTER2=vcluster_cluster2_cluster2
+export REMOTE_CLUSTER1=vcluster-cluster1-cluster1
+export REMOTE_CLUSTER2=vcluster-cluster2-cluster2
 ```
 
 You can also see the contexts with:
