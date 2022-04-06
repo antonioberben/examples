@@ -265,7 +265,7 @@ metadata:
 spec:
   profile: minimal
   hub: $REPO
-  tag: ${ISTIO_VERSION}-solo
+  tag: ${ISTIO_VERSION}
 
   meshConfig:
     accessLogFile: /dev/stdout
@@ -344,7 +344,7 @@ Example output:
 ✔ Installation complete
 ```
 
-Install Istio in cluster-2.
+Install Istio in `cluster-2`.
 ```
 CLUSTER_NAME=$REMOTE_CLUSTER2
 cat << EOF | istioctl install -y --context $REMOTE_CLUSTER2 -f -
@@ -356,7 +356,7 @@ metadata:
 spec:
   profile: minimal
   hub: $REPO
-  tag: ${ISTIO_VERSION}-solo
+  tag: ${ISTIO_VERSION}
 
   meshConfig:
     accessLogFile: /dev/stdout
@@ -437,10 +437,10 @@ kubectl get mesh -n gloo-mesh --context $REMOTE_CLUSTER2
 
 Example output:
 ```
-NAME                            AGE
-istiod-istio-system-cluster-1   68s
-istiod-istio-system-cluster-2   28s
-
+NAME                                             AGE
+istiod-istio-system-vcluster-cluster1-cluster1   90m
+NAME                                             AGE
+istiod-istio-system-vcluster-cluster2-cluster2   6m14s
 ```
 
 
@@ -531,7 +531,5 @@ spec:
   imports:
      - name: bookinfo
 EOF
-
-
 ```
 
