@@ -120,7 +120,7 @@ kubectl config rename-context vcluster_cluster2_cluster2 vcluster-cluster2-clust
 
 Obtain the host cluster context:
 ```
-HOST_CLUSTER=$(kubectl config current-context)
+export HOST_CLUSTER=$(kubectl config current-context)
 ```
 
 And keep the contexts for the vcluster:
@@ -533,3 +533,26 @@ spec:
 EOF
 ```
 
+### Deploy Bookinfo across clusters
+
+In `cluster1`:
+```
+kubectl --context $REMOTE_CLUSTER1 label namespace bookinfo istio-injection=enabled
+kubectl --context $REMOTE_CLUSTER1 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app,version notin (v3)'
+kubectl --context $REMOTE_CLUSTER1 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account'
+```
+
+In `cluster2`:
+```
+kubectl --context $REMOTE_CLUSTER2 label namespace bookinfo istio-injection=enabled
+kubectl --context $REMOTE_CLUSTER2 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'service in (reviews)'
+kubectl --context $REMOTE_CLUSTER2 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app in (reviews),version in (v3)'
+kubectl --context $REMOTE_CLUSTER2 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'app in (ratings)'
+kubectl --context $REMOTE_CLUSTER2 -n bookinfo apply -f https://raw.githubusercontent.com/istio/istio/$ISTIO_VERSION/samples/bookinfo/platform/kube/bookinfo.yaml -l 'account in (reviews, ratings)'
+```
+
+Verify that the Bookinfo pods are have a status of Running
+```
+kubectl --context $REMOTE_CLUSTER1 get pods -n bookinfo
+kubectl --context $REMOTE_CLUSTER2 get pods -n bookinfo
+```
